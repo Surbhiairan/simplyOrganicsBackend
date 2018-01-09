@@ -1,0 +1,25 @@
+{
+  "name": "simplyorganicsbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "file-system": "^2.2.2",
+    "mysql": "2.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anjali22/simplyOrganicsBackend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anjali22/simplyOrganicsBackend/issues"
+  },
+  "homepage": "https://github.com/anjali22/simplyOrganicsBackend#readme"
+}
