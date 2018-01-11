@@ -4,23 +4,85 @@ var app = express();
 var bodyParser = require('body-parser');
 var port = 3000;
 
+//app.use(express.bodyParser());
+ // parse application/json
+ app.use(bodyParser.json());                        
+ 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(function(req, res, next){
 	global.connection = mysql.createConnection({
 		host: "localhost",
         user: "root",
         password: "Anjal!22",
-        database: "simplyorganics"
+        database: "simplyorganicsold"
 	});
 	connection.connect();
+
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	
+		// Request methods you wish to allow
+		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	
+		// Request headers you wish to allow
+		res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+	
+		// Set to true if you need the website to include cookies in the requests sent
+		// to the API (e.g. in case you use sessions)
+		res.setHeader('Access-Control-Allow-Credentials', true);
+
 	next();
 });
 
 
 app.get('/', function(req, res, next) {
-	connection.query('SELECT * from User', function (error, results, fields) {
+	connection.query('SELECT * from tbl_users', function (error, results, fields) {
 		if (error) throw error;
 		res.send(JSON.stringify(results));
 	});
+});
+
+app.get('/productslist', function(req, res, next) {
+	connection.query('SELECT * FROM tbl_product', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.get('/customerlist', function(req, res, next) {
+	connection.query('SELECT * FROM tbl_users', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.post("/customeradd", (req, res) => {
+	console.log(req.body.fname);
+	console.log(req.body.lname);
+	//const product = { p_title: 'dal', p_price: 123 };
+	var query = connection.query('INSERT INTO about_us SET ?',{description:req.body.fname},
+	//var query = connection.query("INSERT INTO tbl_product (p_title,p_price) VALUES ('daal',123)",
+	function(err, result) {
+        console.log("result",result, "err", err);
+    });
+});
+
+app.post("/productedit", (req, res) => {
+	console.log(req.body.title,"title");
+	console.log(req.body.price);
+	const product = { p_title: 'dal', p_price: 123 };
+	var query = connection.query('INSERT INTO about_us SET ?',{description:req.body.title},
+	//var query = connection.query("INSERT INTO tbl_product (p_title,p_price) VALUES ('daal',123)",
+	function(err, result) {
+        console.log("result",result, "err", err);
+    });
+    // connection.query("insert into tbl_product(p_title,p_price) values(?,?)",[product], function (error, results, fields) {
+	// 	if (error) throw error;
+	// 	console.log(results);
+	// 	console.log('inserted');
+	// 	//res.send(JSON.stringify({"results": results}));
+	// })
 });
 
 app.listen(port, () => {
