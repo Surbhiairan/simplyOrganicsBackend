@@ -85,6 +85,17 @@ app.post("/productedit", (req, res) => {
 	// })
 });
 
+app.get("/productdetail",(req, res) => {
+	//console.log("req", req)
+	console.log(req.query.productid);
+	var p_id = req.query.productid;
+	connection.query('SELECT * FROM tbl_product where p_id= ?', [p_id], function (error, results, fields) {
+		if (error) throw error;
+		console.log(results);
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
 app.listen(port, () => {
     console.log("Server listening on port " + port);
 });
