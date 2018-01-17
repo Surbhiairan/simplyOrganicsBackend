@@ -68,6 +68,17 @@ app.post("/customeradd", (req, res) => {
     });
 });
 
+app.get("/customerdetail",(req, res) => {
+	//console.log("req", req)
+	console.log(req.query.userid);
+	var userid = req.query.userid;
+	connection.query('SELECT * FROM tbl_users where user_id= ?', [userid], function (error, results, fields) {
+		if (error) throw error;
+		console.log(results);
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
 app.post("/productedit", (req, res) => {
 	console.log(req.body.title,"title");
 	console.log(req.body.price);
