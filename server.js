@@ -61,7 +61,18 @@ app.get('/customerlist', function(req, res, next) {
 	});
 });
 
+app.get('/salespersonlist', function(req, res, next) {
+	connection.query("SELECT * from Users where role='salesperson'", function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
 app.get('/productslist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
 	connection.query('SELECT * FROM Product', function (error, results, fields) {
 		if (error) throw error;
 		res.send(JSON.stringify({"results": results}));
@@ -151,7 +162,7 @@ app.post("/productedit", (req, res) => {
 	console.log(req.body.title,"title");
 	console.log(req.body.price);
 	const product = { p_title: 'dal', p_price: 123 };
-	var query = connection.query('INSERT INTO about_us SET ?',{description:req.body.title},
+	var query = connection.query('INSERT INTO Product SET ?',{description:req.body.title},
 	//var query = connection.query("INSERT INTO tbl_product (p_title,p_price) VALUES ('daal',123)",
 	function(err, result) {
         console.log("result",result, "err", err);
@@ -168,12 +179,116 @@ app.get("/productdetail",(req, res) => {
 	//console.log("req", req)
 	console.log(req.query.productid);
 	var p_id = req.query.productid;
-	connection.query('SELECT * FROM tbl_product where p_id= ?', [p_id], function (error, results, fields) {
+	connection.query('SELECT * FROM Product where prod_id= ?', [p_id], function (error, results, fields) {
 		if (error) throw error;
 		console.log(results);
 		res.send(JSON.stringify({"results": results}));
 	});
 });
+
+
+app.get('/storeview', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Store', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.post("/storeedit", (req, res) => {
+	
+	console.log(req.body,"bodyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+	//const product = { p_title: 'dal', p_price: 123 };
+	var query = connection.query('INSERT INTO Store SET ?',{name:req.body.name, description: req.body.description, address: req.body.address, pincode: req.body.pincode, city: req.body.city, state: req.body.state, country: req.body.country, contact: req.body.contact, date: req.body.date },
+	//var query = connection.query("INSERT INTO tbl_product (p_title,p_price) VALUES ('daal',123)",
+	function(err, result) {
+        console.log("result",result, "err", err);
+    });
+});
+
+app.get('/catlist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Category', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.get('/measlist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Measure', function (error, results, fields) {
+		if (error) throw error;
+		var measures=results[0];
+		res.send(results);
+		//res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.get('/quantlist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Quantity', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.get('/currlist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Currency', function (error, results, fields) {
+		if (error) throw error;
+		var currencies=results[0];
+		res.send(results);
+	});
+});
+
+app.get('/citylist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Cities', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.get('/statelist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM States', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
+app.get('/countrylist', function(req, res, next) {
+	// SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities 
+	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
+	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
+
+	connection.query('SELECT * FROM Countries', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({"results": results}));
+	});
+});
+
 
 app.listen(port, () => {
     console.log("Server listening on port " + port);
