@@ -15,8 +15,8 @@ app.use(function(req, res, next){
 	global.connection = mysql.createConnection({
 		host: "localhost",
         user: "root",
-        password: "Anjal!22",
-        database: "simplyorganics"
+        password: "",
+        database: "simplyorganics_new"
 	});
 	connection.connect();
 
@@ -151,7 +151,7 @@ app.get("/customerdetail",(req, res) => {
 	console.log(req.query.userid);
     var userid = req.query.userid;
    // connection.query("SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid])
-    connection.query("SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid], function (error, results, fields) {
+	connection.query("SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid], function (error, results, fields) {
 		if (error) throw error;
 		console.log(results);
 		res.send(JSON.stringify({"results": results}));
@@ -194,6 +194,8 @@ app.get('/storeview', function(req, res, next) {
 
 	connection.query('SELECT * FROM Store', function (error, results, fields) {
 		if (error) throw error;
+		/* var stores = results[0];
+		res.send(results); */
 		res.send(JSON.stringify({"results": results}));
 	});
 });
@@ -202,11 +204,22 @@ app.post("/storeedit", (req, res) => {
 	
 	console.log(req.body,"bodyyyyyyyyyyyyyyyyyyyyyyyyyyy");
 	//const product = { p_title: 'dal', p_price: 123 };
-	var query = connection.query('INSERT INTO Store SET ?',{name:req.body.name, description: req.body.description, address: req.body.address, pincode: req.body.pincode, city: req.body.city, state: req.body.state, country: req.body.country, contact: req.body.contact, date: req.body.date },
-	//var query = connection.query("INSERT INTO tbl_product (p_title,p_price) VALUES ('daal',123)",
-	function(err, result) {
-        console.log("result",result, "err", err);
-    });
+	var query = connection.query(
+			'INSERT INTO Store SET ?', {
+				name:req.body.name, 
+				description: req.body.description, 
+				address: req.body.address, 
+				pincode: req.body.pincode, 
+				city: req.body.city, 
+				state: req.body.state, 
+				country: req.body.country, 
+				contact: req.body.contact, 
+				date: req.body.date 
+			},
+			function(err, result) {
+				console.log("result",result, "err", err);
+			}
+		);
 });
 
 app.get('/catlist', function(req, res, next) {
@@ -288,6 +301,30 @@ app.get('/countrylist', function(req, res, next) {
 		res.send(JSON.stringify({"results": results}));
 	});
 });
+
+app.get('/inventorylist', function (req, res, next) {
+	//SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id
+	connection.query('SELECT inventory.*, product.*, store.* FROM inventory JOIN product ON inventory.prod_id = product.prod_id JOIN store ON inventory.store_id = store.store_id', function (error, results, fields) {
+		if (error) throw error;
+		res.send(JSON.stringify({ "results": results }));
+	});
+});
+
+app.post("/inventoryedit", (req, res) => {
+
+	console.log(req.body, "bodyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+	var query = connection.query(
+		'INSERT INTO inventory SET ?', {
+			prod_id: req.body.prod_id,
+			store_id: req.body.store_id,
+			prod_quant: req.body.product_quantity
+		},
+		function (err, result) {
+			console.log("result", result, "err", err);
+		}
+	);
+});
+
 
 
 app.listen(port, () => {
