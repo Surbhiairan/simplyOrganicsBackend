@@ -16,7 +16,7 @@ app.use(function(req, res, next){
 		host: "localhost",
         user: "root",
         password: "",
-        database: "simplyorganics_new"
+		database: "simplyorganics_new"
 	});
 	connection.connect();
 
@@ -73,7 +73,7 @@ app.get('/productslist', function(req, res, next) {
 	// ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id 
 	// JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid],
 
-	connection.query('SELECT * FROM Product', function (error, results, fields) {
+	connection.query('SELECT Product.*, Category.*, Currency.*, Quantity.*, Measure.* FROM Product JOIN Category ON Product.cat_id = Category.cat_id JOIN Currency ON Product.curr_id = Currency.cur_id JOIN Quantity ON Product.quant_id = Quantity.quant_id JOIN Measure ON Product.measure_id = Measure.m_id', function (error, results, fields) {
 		if (error) throw error;
 		res.send(JSON.stringify({"results": results}));
 	});
@@ -92,11 +92,11 @@ app.post("/customeradd", (req, res) => {
 
 app.post("/customerupdate", (req, res) => {
 
-    // var country_id, state_id, city_id;
+    var country_id, state_id, city_id;
 
     // //var data = JSON.parse(req.body);
-	// console.log("body------", req.body);
-    // console.log(req.body.f_name,'fnameeeeeeeeeeeeeee');
+	console.log("body------", req.body);
+    console.log(req.body.f_name,'fnameeeeeeeeeeeeeee');
     // f_name
     // l_name
     // addedBy
@@ -112,38 +112,38 @@ app.post("/customerupdate", (req, res) => {
     
     //const product = { p_title: 'dal', p_price: 123 };
 
-    // connection.query('SELECT country_id FROM Countries where country_name= ?', [req.body.country_name], function (error, results, fields) {
-	// 	if (error) throw error;
-    //     console.log(results);
-    //     this.country_id = results;
-    //     console.log(this.country_id,'countryyyyyyyyyyyiddddddddddddddddddd')
-	// 	//res.send(JSON.stringify({"results": results}));
-    // });
+    connection.query('SELECT country_id FROM Countries where country_name= ?', [req.body.country_name], function (error, results, fields) {
+		if (error) throw error;
+        console.log(results);
+        this.country_id = results;
+        console.log(this.country_id,'countryyyyyyyyyyyiddddddddddddddddddd')
+		//res.send(JSON.stringify({"results": results}));
+    });
 
-    // connection.query('SELECT state_id FROM States where state_name= ?', [req.body.state_name], function (error, results, fields) {
-	// 	if (error) throw error;
-    //     console.log(results);
-    //     this.state_id = results;
-    //     console.log(this.state_id,'stateeeeeeeeeeeeeeeeee')
-	// 	//res.send(JSON.stringify({"results": results}));
-    // });
+    connection.query('SELECT state_id FROM States where state_name= ?', [req.body.state_name], function (error, results, fields) {
+		if (error) throw error;
+        console.log(results);
+        this.state_id = results;
+        console.log(this.state_id,'stateeeeeeeeeeeeeeeeee')
+		//res.send(JSON.stringify({"results": results}));
+    });
 
-    // connection.query('SELECT city_id FROM Cities where city_name= ?', [req.body.city_name], function (error, results, fields) {
-	// 	if (error) throw error;
-    //     console.log(results);
-    //     this.city_id = results;
-    //     console.log(this.city_id,'citiiiiiiiiiiiiiiiiii')
-	// 	//res.send(JSON.stringify({"results": results}));
-    // });
+    connection.query('SELECT city_id FROM Cities where city_name= ?', [req.body.city_name], function (error, results, fields) {
+		if (error) throw error;
+        console.log(results);
+        this.city_id = results;
+        console.log(this.city_id,'citiiiiiiiiiiiiiiiiii')
+		//res.send(JSON.stringify({"results": results}));
+    });
     
-//     var sql = 'update Users SET f_name=?, l_name=?, addedBy=?,address=?, city=?,contact=?,country=?,dateAdded=?,email=?,landmark=?,pincode=?,state=? where user_id=?';
+    var sql = 'update Users SET f_name=?, l_name=?, addedBy=?,address=?, city=?,contact=?,country=?,dateAdded=?,email=?,landmark=?,pincode=?,state=? where user_id=?';
     
-//    // var params = '[req.body.f_name,req.body.l_name,req.body.addedBy, req.body.address, req.body.city_name,req.body.contact, req.body.country_name, req.body.dateAdded, req.body.email, req.body.landmark,req.body.pincode,req.body.state_name,req.body.user_id]';
+   // var params = '[req.body.f_name,req.body.l_name,req.body.addedBy, req.body.address, req.body.city_name,req.body.contact, req.body.country_name, req.body.dateAdded, req.body.email, req.body.landmark,req.body.pincode,req.body.state_name,req.body.user_id]';
         
         
-// 	var query = connection.query(sql,[req.body.f_name,req.body.l_name,req.body.addedBy, req.body.address, this.city_id,req.body.contact, this.country_id, req.body.dateAdded, req.body.email, req.body.landmark,req.body.pincode,this.state_id,req.body.user_id],function(err, result) {
-//         console.log("result",result, "err", err);
-//     });
+	var query = connection.query(sql,[req.body.f_name,req.body.l_name,req.body.addedBy, req.body.address, this.city_id,req.body.contact, this.country_id, req.body.dateAdded, req.body.email, req.body.landmark,req.body.pincode,this.state_id,req.body.user_id],function(err, result) {
+        console.log("result",result, "err", err);
+    });
 });
 
 app.get("/customerdetail",(req, res) => {
@@ -151,7 +151,7 @@ app.get("/customerdetail",(req, res) => {
 	console.log(req.query.userid);
     var userid = req.query.userid;
    // connection.query("SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid])
-	connection.query("SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?",[userid], function (error, results, fields) {
+	connection.query('SELECT Users.*, Cities.*, States.*, Countries.* FROM Users JOIN Cities ON Users.city = Cities.city_id JOIN States ON Users.state = States.state_id JOIN Countries ON Users.country = Countries.country_id WHERE Users.user_id=?',[userid], function (error, results, fields) {
 		if (error) throw error;
 		console.log(results);
 		res.send(JSON.stringify({"results": results}));
@@ -310,7 +310,7 @@ app.get('/inventorylist', function (req, res, next) {
 	});
 });
 
-app.post("/inventoryedit", (req, res) => {
+app.post("/inventoryadd", (req, res) => {
 
 	console.log(req.body, "bodyyyyyyyyyyyyyyyyyyyyyyyyyyy");
 	var query = connection.query(
@@ -325,6 +325,67 @@ app.post("/inventoryedit", (req, res) => {
 	);
 });
 
+app.put("/inventoryedit", (req, res) => {
+	console.log("body---------", req.body);
+	var productAvail;
+	var movedProductQuant;
+	var addedProductQuant;
+	// Check wheather that product is available in that store or not.
+	connection.query(
+		'SELECT prod_quant FROM Inventory where prod_id = ? && store_id = ?', 
+		[req.body.productName, 
+			req.body.moveFrom
+		], 
+		function (error, results, fields) {
+			if (error) throw error;
+			console.log("results------", results);
+			this.productAvail = results[0].prod_quant
+			console.log(this.productAvail, 'product Available')
+			//res.send(JSON.stringify({"results": results}));
+			if (this.productAvail >= req.body.productQuantity) {
+				console.log("inside if-------");
+				this.movedProductQuant = this.productAvail - req.body.productQuantity;
+				console.log("movedProductQuant", this.movedProductQuant);
+
+				connection.query(
+					'Update inventory SET prod_quant = ? WHERE prod_id = ? && store_id = ?',
+					[this.movedProductQuant,
+					req.body.productName,
+					req.body.moveFrom],
+					function (err, results, fields) {
+						if(err) throw err;
+						console.log("results----------updated", results);
+					}
+				)
+
+				connection.query(
+					'INSERT INTO inventory (prod_id, store_id, prod_quant) ' +
+					 'VALUES (?,?,?) ON DUPLICATE KEY UPDATE ' + 
+					 'prod_id = ?, store_id = ?, prod_quant = inventory.prod_quant + ?', 
+					[
+						req.body.productName,
+						req.body.moveTo,
+						req.body.productQuantity,
+						req.body.productName,
+						req.body.moveTo,
+						req.body.productQuantity
+					],
+					function (err, results, fields) {
+						if (err) throw err;
+						console.log("results----------0", results);
+						res.send(JSON.stringify({ "results": results }));
+
+					}
+				)
+
+			}
+			else {
+				console.log("outside-----")
+			}
+		}
+	);
+
+})
 
 
 app.listen(port, () => {
